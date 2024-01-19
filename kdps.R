@@ -4,24 +4,24 @@ library(data.table)
 library(tibble)
 library(progress)
 
-kinclean = function(phenotype_file = "simulation/pheno.txt",
-                    kinship_file = "simulation/kinship.txt",
-                    fuzziness = 0,
-                    phenotype_name = "pheno2",
-                    prioritize_high = FALSE,
-                    prioritize_low = FALSE,
-                    phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-                    # Header names in the phenotype file
-                    fid_name = "FID",
-                    iid_name = "IID",
-                    # Header names in the kinship file
-                    fid1_name = "FID1",
-                    iid1_name = "IID1",
-                    fid2_name = "FID2",
-                    iid2_name = "IID2",
-                    kinship_name = "KINSHIP",
-                    kinship_threshold = 0.0442,
-                    plink_naive = FALSE){
+kdps = function(phenotype_file = "simulation/pheno.txt",
+                kinship_file = "simulation/kinship.txt",
+                fuzziness = 0,
+                phenotype_name = "pheno2",
+                prioritize_high = FALSE,
+                prioritize_low = FALSE,
+                phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+                # Header names in the phenotype file
+                fid_name = "FID",
+                iid_name = "IID",
+                # Header names in the kinship file
+                fid1_name = "FID1",
+                iid1_name = "IID1",
+                fid2_name = "FID2",
+                iid2_name = "IID2",
+                kinship_name = "KINSHIP",
+                kinship_threshold = 0.0442,
+                phenotypic_naive = FALSE){
   
   ### Make phenotype data frame
   pheno = as.data.frame(fread(phenotype_file))
@@ -94,9 +94,10 @@ kinclean = function(phenotype_file = "simulation/pheno.txt",
               by = "fid2_iid2") %>%
     mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
   
-  if(plink_naive){
+  if(phenotypic_naive){
     singular_nodes = singular_nodes %>%
-      mutate(subject_to_remove = ifelse(runif(1>0.5), fid1_iid1, fid2_iid2))
+      mutate(subject_to_remove = ifelse(runif(dim(singular_nodes)[1]) > 0.5,
+                                        fid1_iid1, fid2_iid2))
   }
   
   subject_to_remove_list = singular_nodes[["subject_to_remove"]]
@@ -183,7 +184,7 @@ kinclean = function(phenotype_file = "simulation/pheno.txt",
       left_join(pheno, by = "fid_iid") %>%
       arrange(wt))[["fid_iid"]][1]
     
-    if(plink_naive){
+    if(phenotypic_naive){
       subject_to_remove = (tibble(
         fid_iid = names(relationship[relationship >= max_count_corrected])
       ) %>%
@@ -210,7 +211,7 @@ kinclean = function(phenotype_file = "simulation/pheno.txt",
               by = "fid2_iid2") %>%
     mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
   
-  if(plink_naive){
+  if(phenotypic_naive){
     singular_nodes = singular_nodes %>%
       mutate(subject_to_remove = ifelse(runif(1>0.5), fid1_iid1, fid2_iid2))
   }
@@ -244,21 +245,21 @@ kinclean = function(phenotype_file = "simulation/pheno.txt",
 }
 
 ### NOT RUN
-# subject_to_remove = kinclean(phenotype_file = "simulation/pheno.txt",
-#                              kinship_file = "simulation/kinship.txt",
-#                              fuzziness = 0,
-#                              phenotype_name = "pheno2",
-#                              prioritize_high = FALSE,
-#                              prioritize_low = FALSE,
-#                              phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-#                              # Header names in the phenotype file
-#                              fid_name = "FID",
-#                              iid_name = "IID",
-#                              # Header names in the kinship file
-#                              fid1_name = "FID1",
-#                              iid1_name = "IID1",
-#                              fid2_name = "FID2",
-#                              iid2_name = "IID2",
-#                              kinship_name = "KINSHIP",
-#                              kinship_threshold = 0.0442)
+# subject_to_remove = kdps(phenotype_file = "simulation/pheno.txt",
+#                          kinship_file = "simulation/kinship.txt",
+#                          fuzziness = 0,
+#                          phenotype_name = "pheno2",
+#                          prioritize_high = FALSE,
+#                          prioritize_low = FALSE,
+#                          phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+#                          # Header names in the phenotype file
+#                          fid_name = "FID",
+#                          iid_name = "IID",
+#                          # Header names in the kinship file
+#                          fid1_name = "FID1",
+#                          iid1_name = "IID1",
+#                          fid2_name = "FID2",
+#                          iid2_name = "IID2",
+#                          kinship_name = "KINSHIP",
+#                          kinship_threshold = 0.0442)
 

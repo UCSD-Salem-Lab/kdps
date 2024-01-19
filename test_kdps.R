@@ -7,9 +7,9 @@ library(knitr)
 
 kinship = fread("simulation/kinship.txt")
 pheno = fread("simulation/pheno.txt")
-source("kinclean.R")
+source("kdps.R")
 
-test_kinclean = function(
+test_kdps = function(
     n_relationship = 10000,
     seed = 492357816,
     fuzziness = 0,
@@ -17,7 +17,7 @@ test_kinclean = function(
     prioritize_high = FALSE,
     prioritize_low = FALSE,
     phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-    plink_naive = FALSE
+    phenotypic_naive = FALSE
 ){
   
   set.seed(seed)
@@ -52,14 +52,14 @@ test_kinclean = function(
   fwrite(pheno_subest, file = "pheno_temp.txt", sep = " ")
   
   start_time = Sys.time()
-  subject_to_remove = kinclean(phenotype_file = "pheno_temp.txt", 
-                               kinship_file = "kinship_temp.txt",
-                               fuzziness = fuzziness,
-                               phenotype_name = phenotype_name,
-                               prioritize_high = prioritize_high,
-                               prioritize_low = prioritize_low,
-                               phenotype_rank = phenotype_rank, 
-                               plink_naive = plink_naive)
+  subject_to_remove = kdps(phenotype_file = "pheno_temp.txt", 
+                           kinship_file = "kinship_temp.txt",
+                           fuzziness = fuzziness,
+                           phenotype_name = phenotype_name,
+                           prioritize_high = prioritize_high,
+                           prioritize_low = prioritize_low,
+                           phenotype_rank = phenotype_rank, 
+                           phenotypic_naive = phenotypic_naive)
   end_time = Sys.time()
   runtime = end_time - start_time
   cat(paste0("Total runtime: ", round(runtime, 3), " seconds.\n"))
@@ -88,7 +88,7 @@ test_kinclean = function(
     prioritize_high = prioritize_high,
     prioritize_low = prioritize_low,
     phenotype_rank = phenotype_rank,
-    plink_naive = plink_naive,
+    phenotypic_naive = phenotypic_naive,
     runtime = runtime,
     total_n = dim(pheno_subest)[1],
     n_remove = dim(subject_to_remove)[1],
@@ -101,39 +101,72 @@ test_kinclean = function(
   return(test_result)
 }
 
-### NOT RUN
-# # Running phenotype 1 and 2 - categorical
-# test_kinclean(
-#   n_relationship = 10000,
-#   seed = 492357816,
-#   fuzziness = 0,
-#   phenotype_name = "pheno1",
-#   prioritize_high = FALSE,
-#   prioritize_low = FALSE,
-#   phenotype_rank = c("DISEASED", "HEALTHY"),
-#   plink_naive = FALSE
-# )
-# 
-# test_kinclean(
-#   n_relationship = 10000,
-#   seed = 492357816,
-#   fuzziness = 0,
-#   phenotype_name = "pheno2",
-#   prioritize_high = FALSE,
-#   prioritize_low = FALSE,
-#   phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-#   plink_naive = FALSE
-# )
-# 
-# # Running phenotype 3 - continuous
-# test_kinclean(
-#   n_relationship = 10000,
-#   seed = 492357816,
-#   fuzziness = 0,
-#   phenotype_name = "pheno3",
-#   prioritize_high = TRUE,
-#   prioritize_low = FALSE,
-#   phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-#   plink_naive = FALSE
-# )
+### TEST
+# Running phenotype 1 and 2 - categorical
+pheno1_results = test_kdps(
+  n_relationship = 10000,
+  seed = 492357816,
+  fuzziness = 0,
+  phenotype_name = "pheno1",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED", "HEALTHY"),
+  phenotypic_naive = FALSE
+)
+
+pheno1_results_naive = test_kdps(
+  n_relationship = 10000,
+  seed = 492357816,
+  fuzziness = 0,
+  phenotype_name = "pheno1",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED", "HEALTHY"),
+  phenotypic_naive = TRUE
+)
+
+pheno2_results = test_kdps(
+  n_relationship = 10000,
+  seed = 492357816,
+  fuzziness = 0,
+  phenotype_name = "pheno2",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  phenotypic_naive = FALSE
+)
+
+pheno2_results_naive = test_kdps(
+  n_relationship = 10000,
+  seed = 492357816,
+  fuzziness = 0,
+  phenotype_name = "pheno2",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  phenotypic_naive = TRUE
+)
+
+# Running phenotype 3 - continuous
+pheno3_results = test_kdps(
+  n_relationship = 10000,
+  seed = 492357816,
+  fuzziness = 2,
+  phenotype_name = "pheno3",
+  prioritize_high = TRUE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  phenotypic_naive = FALSE
+)
+
+pheno3_results_naive = test_kdps(
+  n_relationship = 10000,
+  seed = 492357816,
+  fuzziness = 2,
+  phenotype_name = "pheno3",
+  prioritize_high = TRUE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  phenotypic_naive = TRUE
+)
 
