@@ -5,9 +5,9 @@ library(tibble)
 library(progress)
 library(knitr)
 
-kinship = fread("data/kinship.txt")
-pheno = fread("data/pheno.txt")
-source("kdps.R")
+kinship = fread("../data/kinship.txt")
+pheno = fread("../data/pheno.txt")
+source("../kdps.R")
 
 test_kdps = function(
     n_relationship = 10000,
@@ -100,73 +100,3 @@ test_kdps = function(
   
   return(test_result)
 }
-
-### TEST
-# Running phenotype 1 and 2 - categorical
-pheno1_results = test_kdps(
-  n_relationship = 10000,
-  seed = 492357816,
-  fuzziness = 0,
-  phenotype_name = "pheno1",
-  prioritize_high = FALSE,
-  prioritize_low = FALSE,
-  phenotype_rank = c("DISEASED", "HEALTHY"),
-  phenotypic_naive = FALSE
-)
-
-pheno1_results_naive = test_kdps(
-  n_relationship = 10000,
-  seed = 492357816,
-  fuzziness = 0,
-  phenotype_name = "pheno1",
-  prioritize_high = FALSE,
-  prioritize_low = FALSE,
-  phenotype_rank = c("DISEASED", "HEALTHY"),
-  phenotypic_naive = TRUE
-)
-
-pheno2_results = test_kdps(
-  n_relationship = 10000,
-  seed = 492357816,
-  fuzziness = 0,
-  phenotype_name = "pheno2",
-  prioritize_high = FALSE,
-  prioritize_low = FALSE,
-  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-  phenotypic_naive = FALSE
-)
-
-pheno2_results_naive = test_kdps(
-  n_relationship = 10000,
-  seed = 492357816,
-  fuzziness = 0,
-  phenotype_name = "pheno2",
-  prioritize_high = FALSE,
-  prioritize_low = FALSE,
-  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-  phenotypic_naive = TRUE
-)
-
-# Running phenotype 3 - continuous
-pheno3_results = test_kdps(
-  n_relationship = 10000,
-  seed = 492357816,
-  fuzziness = 0,
-  phenotype_name = "pheno3",
-  prioritize_high = TRUE,
-  prioritize_low = FALSE,
-  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-  phenotypic_naive = FALSE
-)
-
-pheno3_results_naive = test_kdps(
-  n_relationship = 10000,
-  seed = 492357816,
-  fuzziness = 0,
-  phenotype_name = "pheno3",
-  prioritize_high = TRUE,
-  prioritize_low = FALSE,
-  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-  phenotypic_naive = TRUE
-)
-

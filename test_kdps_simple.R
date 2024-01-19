@@ -5,8 +5,8 @@ library(tibble)
 library(progress)
 library(knitr)
 
-kinship = fread("simulation/simple_kinship.txt")
-pheno = fread("simulation/simple_pheno.txt")
+kinship = fread("data/simple_kinship.txt")
+pheno = fread("data/simple_pheno.txt")
 source("kdps.R")
 
 rm(subject_to_remove)

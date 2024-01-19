@@ -4,8 +4,8 @@ library(data.table)
 library(tibble)
 library(progress)
 
-kdps = function(phenotype_file = "simulation/pheno.txt",
-                kinship_file = "simulation/kinship.txt",
+kdps = function(phenotype_file = "data/pheno.txt",
+                kinship_file = "data/kinship.txt",
                 fuzziness = 0,
                 phenotype_name = "pheno2",
                 prioritize_high = FALSE,
