@@ -20,7 +20,7 @@ for(fuzziness in c(0,1,2,5,10)){
       )
       
       filename = paste0("fuzziness", fuzziness, "_seed", seed, "_", ifelse(phenotypic_naive, "naive", "notnaive"), ".rda")
-      filename = file.path("fuzziness_test", filename)
+      # filename = file.path("fuzziness_test", filename)
       save(result, file = filename)
       
     }

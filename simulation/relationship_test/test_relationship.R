@@ -1,7 +1,9 @@
 source("test_kdps.R")
 
-for(n_relationship in c(100, 500, 1000, 5000, 10000, 50000, 1e5)){
-  for(seed in c(561892347, 492357816, 634582197)){
+# for(n_relationship in c(100, 500, 1000, 5000, 10000, 50000, 1e5)){
+for(n_relationship in c(1e5)){
+  # for(seed in c(561892347, 492357816, 634582197)){
+  for(seed in c(492357816, 634582197)){
     for(phenotypic_naive in c(TRUE, FALSE)){
       
       cat(paste0("N Relationship: ", n_relationship, "\n"))
@@ -20,7 +22,7 @@ for(n_relationship in c(100, 500, 1000, 5000, 10000, 50000, 1e5)){
       )
       
       filename = paste0("relationship", n_relationship, "_seed", seed, "_", ifelse(phenotypic_naive, "naive", "notnaive"), ".rda")
-      filename = file.path("relationship_test", filename)
+      # filename = file.path("relationship_test", filename)
       save(result, file = filename)
       
     }

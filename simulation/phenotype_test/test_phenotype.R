@@ -19,7 +19,7 @@ for(seed in c(561892347, 492357816, 634582197)){
     )
     
     filename = paste0("phenotypePheno1", "_seed", seed, "_", ifelse(phenotypic_naive, "naive", "notnaive"), ".rda")
-    filename = file.path("phenotype_test", filename)
+    # filename = file.path("phenotype_test", filename)
     save(result, file = filename)
     
   }
@@ -44,7 +44,7 @@ for(seed in c(561892347, 492357816, 634582197)){
     )
     
     filename = paste0("phenotypePheno2", "_seed", seed, "_", ifelse(phenotypic_naive, "naive", "notnaive"), ".rda")
-    filename = file.path("phenotype_test", filename)
+    # filename = file.path("phenotype_test", filename)
     save(result, file = filename)
     
   }
@@ -69,7 +69,7 @@ for(seed in c(561892347, 492357816, 634582197)){
     )
     
     filename = paste0("phenotypePheno3", "_seed", seed, "_", ifelse(phenotypic_naive, "naive", "notnaive"), ".rda")
-    filename = file.path("phenotype_test", filename)
+    # filename = file.path("phenotype_test", filename)
     save(result, file = filename)
     
   }
