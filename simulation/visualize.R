@@ -2,6 +2,7 @@ library(dplyr)
 library(readxl)
 library(ggplot2)
 library(ggpubr)
+library(writexl)
 
 fuzziness = read_xlsx("fuzziness_result_summary.xlsx")
 phenotype = read_xlsx("phenotype_result_summary.xlsx")
@@ -50,6 +51,7 @@ plt2 = ggplot(data = df, aes(x = fuzziness, y = average_time)) +
 
 
 df = relationship %>%
+  filter(!phenotypic_naive) %>%
   group_by(relationship) %>%
   summarize(average_time = mean(comp_time),
             sd = sd(comp_time), 
@@ -67,6 +69,29 @@ plt3 = ggplot(data = df, aes(x = relationship, y = average_time)) +
   theme_pubr() + 
   theme(text = element_text(size = 15),
         plot.margin = margin(0.1,1,0.1,0.1, "cm")); plt3
+
+df = relationship %>%
+  filter(phenotypic_naive) %>%
+  group_by(relationship) %>%
+  summarize(average_ratio = mean(disease_percent_unrelated),
+            sd = sd(disease_percent_unrelated), 
+            n = n()) %>%
+  mutate(sem = sd / sqrt(n)) %>%
+  mutate(relationship = as.numeric(relationship)) %>%
+  arrange(relationship)
+
+df_naive = relationship %>%
+  filter(!phenotypic_naive) %>%
+  group_by(relationship) %>%
+  summarize(average_ratio = mean(disease_percent_unrelated),
+            sd = sd(disease_percent_unrelated), 
+            n = n()) %>%
+  mutate(sem = sd / sqrt(n)) %>%
+  mutate(relationship = as.numeric(relationship)) %>%
+  arrange(relationship)
+
+# write_xlsx(df, path = "non_naive.xlsx")
+# write_xlsx(df_naive, path = "naive.xlsx")
 
 ggsave(filename = "ratio_to_fuzziness.png", device = "png", plot = plt1, dpi = 1200,
        width = 5, height = 4.5)
