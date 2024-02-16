@@ -25,7 +25,8 @@ kdps = function(phenotype_file = "data/pheno.txt",
   
   ### Make phenotype data frame
   pheno = as.data.frame(fread(phenotype_file))
-  
+  pheno[[phenotype_name]] = as.character(pheno[[phenotype_name]])
+  phenotype_rank = as.character(phenotype_rank)
   if(!any(prioritize_high, prioritize_low)){
     phenotype = pheno[[phenotype_name]]
     mapping = setNames(length(phenotype_rank):1, phenotype_rank)
