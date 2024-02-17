@@ -74,7 +74,7 @@ kdps = function(phenotype_file = "data/pheno.txt",
     mutate(fid2_iid2 = paste0("subject_", fid2_iid2)) %>%
     mutate(related = kinship >= kinship_threshold) %>%
     filter(related) %>%
-    select(fid1_iid1, fid2_iid2, related) 
+    select(fid1_iid1, fid2_iid2, related)
   
   # Filter out singular relatedness
   cat("Filtering out singular relatedness...\n")
