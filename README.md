@@ -2,6 +2,7 @@
 # Kinship Decouple and Phenotype Selection (KDPS)
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of KDPS is to remove related subjects based on kinship matrix as well as subject phenotypes
