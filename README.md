@@ -1,1 +1,0 @@
-# Get unrelated individuals from Kinship output
