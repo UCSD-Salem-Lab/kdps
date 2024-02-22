@@ -166,17 +166,17 @@ kdps = function(phenotype_file = "data/pheno.txt",
   singular_nodes = kinship |>
     dplyr::filter(fid1_iid1 %in% one_timers) |>
     dplyr::filter(fid2_iid2 %in% one_timers) |>
-    dplyr::left_join(mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) |> 
-                       select(fid1_iid1, wt1),
+    dplyr::left_join(dplyr::mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) |> 
+                       dplyr::select(fid1_iid1, wt1),
                      by = "fid1_iid1") |>
-    dplyr::left_join(mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) |> 
-                       select(fid2_iid2, wt2),
+    dplyr::left_join(dplyr::mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) |> 
+                       dplyr::select(fid2_iid2, wt2),
                      by = "fid2_iid2") |>
     dplyr::mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
   
   if(phenotypic_naive){
     singular_nodes = singular_nodes |>
-      mutate(subject_to_remove = ifelse(runif(dim(singular_nodes)[1]) > 0.5,
+      dplyr::mutate(subject_to_remove = ifelse(runif(dim(singular_nodes)[1]) > 0.5,
                                         fid1_iid1, fid2_iid2))
   }
   
@@ -217,7 +217,7 @@ kdps = function(phenotype_file = "data/pheno.txt",
       cat(paste0("Filtering out isolated super-subjects with ", n_relation, " relatives...\n"))
       n_timers = names(relationship[relationship == n_relation])
       if(length(n_timers) > 0){
-        pb = progress_bar$new(total = length(n_timers))
+        pb = progress::progress_bar$new(total = length(n_timers))
         for(subject in n_timers){
           subject_node = kinship |>
             dplyr::filter(fid1_iid1 == subject | fid2_iid2 == subject)
@@ -262,14 +262,14 @@ kdps = function(phenotype_file = "data/pheno.txt",
     subject_to_remove = (tibble::tibble(
       fid_iid = names(relationship[relationship >= max_count_corrected])
     ) |>
-      left_join(pheno, by = "fid_iid") |>
+      dplyr::left_join(pheno, by = "fid_iid") |>
       dplyr::arrange(wt))[["fid_iid"]][1]
     
     if(phenotypic_naive){
       subject_to_remove = (tibble::tibble(
         fid_iid = names(relationship[relationship >= max_count_corrected])
       ) |>
-        left_join(pheno, by = "fid_iid"))[["fid_iid"]]
+        dplyr::left_join(pheno, by = "fid_iid"))[["fid_iid"]]
       subject_to_remove = subject_to_remove[sample(1:length(subject_to_remove), 1)]
     }
     
