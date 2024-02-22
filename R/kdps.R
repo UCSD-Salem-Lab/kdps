@@ -263,7 +263,7 @@ kdps = function(phenotype_file = "data/pheno.txt",
       fid_iid = names(relationship[relationship >= max_count_corrected])
     ) %>%
       left_join(pheno, by = "fid_iid") %>%
-      arrange(wt))[["fid_iid"]][1]
+      dplyr::arrange(wt))[["fid_iid"]][1]
     
     if(phenotypic_naive){
       subject_to_remove = (tibble(
