@@ -37,7 +37,7 @@
 #' @return A data frame with two columns, `FID` and `IID`, representing the family and individual IDs
 #' of subjects suggested for removal. This output can be used to refine the study population by
 #' excluding these subjects in subsequent analyses.
-#'
+#' @importFrom stats runif setNames
 #' @examples
 #' \dontrun{
 #' subject_to_remove = kdps(phenotype_file = "data/pheno.txt",
@@ -123,13 +123,13 @@ kdps = function(phenotype_file = "data/pheno.txt",
   ) 
   
   kinship = kinship %>%
-    mutate(fid1_iid1 = paste(fid1, iid1, sep = "_")) %>%
-    mutate(fid2_iid2 = paste(fid2, iid2, sep = "_")) %>%
-    mutate(fid1_iid1 = paste0("subject_", fid1_iid1)) %>%
-    mutate(fid2_iid2 = paste0("subject_", fid2_iid2)) %>%
-    mutate(related = kinship >= kinship_threshold) %>%
-    filter(related) %>%
-    select(fid1_iid1, fid2_iid2, related)
+    dplyr::mutate(fid1_iid1 = paste(fid1, iid1, sep = "_")) %>%
+    dplyr::mutate(fid2_iid2 = paste(fid2, iid2, sep = "_")) %>%
+    dplyr::mutate(fid1_iid1 = paste0("subject_", fid1_iid1)) %>%
+    dplyr::mutate(fid2_iid2 = paste0("subject_", fid2_iid2)) %>%
+    dplyr::mutate(related = kinship >= kinship_threshold) %>%
+    dplyr::filter(related) %>%
+    dplyr::select(fid1_iid1, fid2_iid2, related)
   
   # Remove subjects that are not found in both the kinship and phenotype files
   kinship_subjects = unique(c(kinship[["fid1_iid1"]], kinship[["fid2_iid2"]]))
@@ -150,8 +150,8 @@ kdps = function(phenotype_file = "data/pheno.txt",
   subject_to_remove_list = kinship_standout
   
   kinship = kinship %>%
-    filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
-    filter(!(fid2_iid2 %in% subject_to_remove_list))
+    dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
+    dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
   
   cat(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
   
@@ -164,15 +164,15 @@ kdps = function(phenotype_file = "data/pheno.txt",
   one_timers = names(relationship[relationship == 1])
   
   singular_nodes = kinship %>%
-    filter(fid1_iid1 %in% one_timers) %>%
-    filter(fid2_iid2 %in% one_timers) %>%
-    left_join(mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) %>% 
-                select(fid1_iid1, wt1),
-              by = "fid1_iid1") %>%
-    left_join(mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) %>% 
-                select(fid2_iid2, wt2),
-              by = "fid2_iid2") %>%
-    mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
+    dplyr::filter(fid1_iid1 %in% one_timers) %>%
+    dplyr::filter(fid2_iid2 %in% one_timers) %>%
+    dplyr::left_join(mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) %>% 
+                       select(fid1_iid1, wt1),
+                     by = "fid1_iid1") %>%
+    dplyr::left_join(mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) %>% 
+                       select(fid2_iid2, wt2),
+                     by = "fid2_iid2") %>%
+    dplyr::mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
   
   if(phenotypic_naive){
     singular_nodes = singular_nodes %>%
@@ -183,15 +183,15 @@ kdps = function(phenotype_file = "data/pheno.txt",
   subject_to_remove_list = c(subject_to_remove_list, singular_nodes[["subject_to_remove"]])
   
   kinship = kinship %>%
-    filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
-    filter(!(fid2_iid2 %in% subject_to_remove_list))
+    dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
+    dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
   
   cat(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
   
   if(dim(kinship)[1] == 0){
     cat("Only singular relatedness are present in the dataset...\n")
     average_wt = (pheno %>%
-                    filter(!(fid_iid %in% subject_to_remove_list)))[["wt"]] %>%
+                    dplyr::filter(!(fid_iid %in% subject_to_remove_list)))[["wt"]] %>%
       mean()
     cat(paste0("Average subject phenotypic weight: ", round(average_wt,2), "\n\n"))
     
@@ -220,7 +220,7 @@ kdps = function(phenotype_file = "data/pheno.txt",
         pb = progress_bar$new(total = length(n_timers))
         for(subject in n_timers){
           subject_node = kinship %>%
-            filter(fid1_iid1 == subject | fid2_iid2 == subject)
+            dplyr::filter(fid1_iid1 == subject | fid2_iid2 == subject)
           connected_subjects = c(subject_node[["fid1_iid1"]],
                                  subject_node[["fid2_iid2"]])
           connected_subjects = connected_subjects[connected_subjects != subject]
@@ -238,8 +238,8 @@ kdps = function(phenotype_file = "data/pheno.txt",
     subject_to_remove_list = c(subject_to_remove_list, 
                                isolated_n_timer[["subject"]])
     kinship = kinship %>%
-      filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
-      filter(!(fid2_iid2 %in% subject_to_remove_list))
+      dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
+      dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
   }
   
   # Pruning complex relateness networks
@@ -274,8 +274,8 @@ kdps = function(phenotype_file = "data/pheno.txt",
     }
     
     kinship = kinship %>%
-      filter(fid1_iid1 != subject_to_remove) %>%
-      filter(fid2_iid2 != subject_to_remove)
+      dplyr::filter(fid1_iid1 != subject_to_remove) %>%
+      dplyr::filter(fid2_iid2 != subject_to_remove)
     
     cat(paste0("# of relationships left: ", dim(kinship)[1], "\r"))
     subject_to_remove_list = c(subject_to_remove_list, subject_to_remove)
@@ -285,29 +285,29 @@ kdps = function(phenotype_file = "data/pheno.txt",
   # Work up
   cat("Performing work-up...\n")
   singular_nodes = kinship %>%
-    left_join(mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) %>% 
-                select(fid1_iid1, wt1),
-              by = "fid1_iid1") %>%
-    left_join(mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) %>% 
-                select(fid2_iid2, wt2),
-              by = "fid2_iid2") %>%
-    mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
+    dplyr::left_join(dplyr::mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) %>% 
+                       dplyr::select(fid1_iid1, wt1),
+                     by = "fid1_iid1") %>%
+    dplyr::left_join(dplyr::mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) %>% 
+                       dplyr::select(fid2_iid2, wt2),
+                     by = "fid2_iid2") %>%
+    dplyr::mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
   
   if(phenotypic_naive){
     singular_nodes = singular_nodes %>%
-      mutate(subject_to_remove = ifelse(runif(1>0.5), fid1_iid1, fid2_iid2))
+      dplyr::mutate(subject_to_remove = ifelse(runif(1>0.5), fid1_iid1, fid2_iid2))
   }
   
   subject_to_remove_list = c(subject_to_remove_list, singular_nodes[["subject_to_remove"]])
   
   # Report
   kinship = kinship %>%
-    filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
-    filter(!(fid2_iid2 %in% subject_to_remove_list))
+    dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) %>%
+    dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
   cat(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
   
   average_wt = (pheno %>%
-                  filter(!(fid_iid %in% subject_to_remove_list)))[["wt"]] %>%
+                  dplyr::filter(!(fid_iid %in% subject_to_remove_list)))[["wt"]] %>%
     mean()
   cat(paste0("Average subject phenotypic weight: ", round(average_wt,2), "\n\n"))
   
