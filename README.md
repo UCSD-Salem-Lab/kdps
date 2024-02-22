@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# Kinship Decouple and Phenotype Selection (KDPS)
+# Kinship Decouple and Phenotype Selection (KDPS) <a href="https://github.com/Broccolito/kdps"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 <!-- badges: start -->
 

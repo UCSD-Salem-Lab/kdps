@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Kinship Decouple and Phenotype Selection (KDPS)
+# Kinship Decouple and Phenotype Selection (KDPS) <a href="https://github.com/Broccolito/kdps"><img src="man/figures/logo.png" align="right" height="138" /></a>
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml)
