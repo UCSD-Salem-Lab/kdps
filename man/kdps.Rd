@@ -80,8 +80,8 @@ relatedness filtering through the kinship threshold and fuzziness parameter.
 }
 \examples{
 \dontrun{
-subject_to_remove = kdps(phenotype_file = "data/pheno.txt",
-                         kinship_file = "data/kinship.txt",
+subject_to_remove = kdps(phenotype_file = "data/simple_pheno.txt",
+                         kinship_file = "data/simple_kinship.txt",
                          fuzziness = 0,
                          phenotype_name = "pheno2",
                          prioritize_high = FALSE,
