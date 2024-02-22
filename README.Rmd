@@ -1,22 +1,31 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 
 # Kinship Decouple and Phenotype Selection (KDPS)
 
 <!-- badges: start -->
-
 [![R-CMD-check](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-The goal of KDPS is to remove related subjects based on kinship matrix
-as well as subject phenotype
+The goal of KDPS is to remove related subjects based on kinship matrix as well as subject phenotype
 
 ## Installation
 
-You can install the development version of kdps from
-[GitHub](https://github.com/) with:
+You can install the development version of kdps from [GitHub](https://github.com/) with:
 
-``` r
+```{r,eval=FALSE}
 if(!require("devtools")){
   install.packages("devtools")
   library("devtools")
@@ -28,8 +37,7 @@ devtools::install_github("Broccolito/kdps")
 ## Example
 
 This is a basic example showing how to use the `kdps` function:
-
-``` r
+```{r example,eval=FALSE}
 library(kdps)
 subject_to_remove = kdps(phenotype_file = file.path(system.file("extdata", package = "kdps"), 
                                                     "simple_pheno.txt"),
@@ -54,22 +62,24 @@ subject_to_remove = kdps(phenotype_file = file.path(system.file("extdata", packa
 
 In this example, the phenotype file looks like:
 
-| FID |  IID | pheno1   | pheno2    | pheno3 |
-|----:|-----:|:---------|:----------|-------:|
-|   0 | 1001 | DISEASED | DISEASED2 | 109.50 |
-|   0 | 1002 | HEALTHY  | HEALTHY   | 117.18 |
-|   0 | 1003 | HEALTHY  | HEALTHY   |  90.41 |
-|   0 | 1004 | HEALTHY  | HEALTHY   |  95.00 |
+| FID|  IID|pheno1   |pheno2    | pheno3|
+|---:|----:|:--------|:---------|------:|
+|   0| 1001|DISEASED |DISEASED2 | 109.50|
+|   0| 1002|HEALTHY  |HEALTHY   | 117.18|
+|   0| 1003|HEALTHY  |HEALTHY   |  90.41|
+|   0| 1004|HEALTHY  |HEALTHY   |  95.00|
 
 The kinship file looks like:
 
-| FID1 | IID1 | FID2 | IID2 | HetHet |   IBS0 | KINSHIP |
-|-----:|-----:|-----:|-----:|-------:|-------:|--------:|
-|    0 | 1001 |    0 | 1002 |  0.037 | 0.0083 |       1 |
-|    0 | 1003 |    0 | 1004 |  0.046 | 0.0148 |       1 |
+| FID1| IID1| FID2| IID2| HetHet|   IBS0| KINSHIP|
+|----:|----:|----:|----:|------:|------:|-------:|
+|    0| 1001|    0| 1002|  0.037| 0.0083|       1|
+|    0| 1003|    0| 1004|  0.046| 0.0148|       1|
 
-The real-life datasets are usually much longer but should always contain
-the sample key components:
+The real-life datasets are usually much longer but should always contain the sample key components:
 
 Phenotype file: FID, IID, phenotype (binary, categorical, numerical)
 Kinship file: FID1, IID1, FID2, IID2, Kinship score or IBS score.
+
+
+
