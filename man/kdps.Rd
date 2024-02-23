@@ -94,7 +94,8 @@ subject_to_remove = kdps(phenotype_file = "data/simple_pheno.txt",
                          fid2_name = "FID2",
                          iid2_name = "IID2",
                          kinship_name = "KINSHIP",
-                         kinship_threshold = 0.0442)
+                         kinship_threshold = 0.0442,
+                         phenotypic_naive = FALSE)
 }
 
 }
