@@ -137,14 +137,14 @@ kdps = function(phenotype_file = "data/simple_pheno.txt",
   pheno_subjects = unique(pheno[["fid_iid"]])
   common_subjects = intersect(kinship_subjects, pheno_subjects)
   
-  cat(paste0(length(kinship_subjects), " unique subjects found in the kinship file...\n"))
+  cat(paste0(length(kinship_subjects), " unique related subjects found in the kinship file...\n"))
   cat(paste0(length(pheno_subjects), " unique subjects found in the phenotype file...\n"))
-  cat(paste0(length(common_subjects), " subjects are found in both the kinship and phenotype files...\n"))
+  cat(paste0(length(common_subjects), " subjects are found in both the related kinship and phenotype files...\n"))
   
   kinship_standout = kinship_subjects[!(kinship_subjects %in% common_subjects)]
   pheno_standout = pheno_subjects[!(pheno_subjects %in% common_subjects)]
   
-  cat(paste0(length(kinship_standout), " unique subjects found only in the kinship file...\n"))
+  cat(paste0(length(kinship_standout), " unique subjects found only in the related kinship file...\n"))
   cat(paste0(length(pheno_standout), " unique subjects found only in the phenotype file...\n"))
   
   cat("Removing subjects from the kinship file without phenotype information...\n")
