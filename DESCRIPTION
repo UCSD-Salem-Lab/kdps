@@ -1,20 +1,22 @@
 Package: kdps
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Type: Package
+Title: Kinship Decouple and Phenotype Selection (KDPS)
+Version: 1.0.0
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Wanjun", "Gu", , "wanjun.gu@ucsf.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-7342-7000"))
+Description: A phenotype-aware algorithm for resolving cryptic relatedness in genetic studies. It removes related individuals based on kinship or identity-by-descent (IBD) scores while prioritizing subjects with phenotypes of interest. This approach helps maximize the retention of informative subjects, particularly for rare or valuable traits, and improves statistical power in genetic and epidemiological studies. KDPS supports both categorical and quantitative phenotypes, composite scoring, and customizable pruning strategies using a 'fuzziness' parameter. Benchmark results show improved phenotype retention and high computational efficiency on large-scale datasets like the UK Biobank.
 License: MIT + file LICENSE
 Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+LazyData: true
 Imports: 
     data.table,
     dplyr,
     progress,
-    tibble,
-    tidyr
+    tibble
+Depends: R (>= 4.1.0)
+RoxygenNote: 7.3.2
 Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

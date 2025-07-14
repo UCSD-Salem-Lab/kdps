@@ -1,0 +1,192 @@
+---
+title: "Getting Started with KDPS"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with KDPS}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+`KDPS` (Kinship Decouple and Phenotype Selection) is an R package that resolves cryptic relatedness in genetic studies using a phenotype-aware approach. It removes related individuals based on kinship or IBD scores while prioritizing the retention of subjects with phenotypes of interest.
+
+This tool is useful in GWAS and epidemiological studies where maximizing the number of unrelated individuals with relevant traits is essential for statistical power, especially in rare or stratified phenotypes.
+
+---
+
+# Installation
+
+To install the latest version from GitHub:
+
+```{r}
+if(!require("devtools")){
+  install.packages("devtools")
+  library("devtools")
+}
+
+if(!require("kdps")){
+devtools::install_github("UCSD-Salem-Lab/kdps")
+  library("kdps")
+}
+```
+
+---
+
+# Example Data
+
+This package includes two example files in `extdata/`:
+
+### `simple_pheno.txt`
+
+This file contains phenotypic data for individuals in the cohort. Each row represents one individual.
+
+| Column   | Description |
+|----------|-------------|
+| `FID`    | Family ID (used for linking with kinship data) |
+| `IID`    | Individual ID |
+| `pheno1` | A binary phenotype (e.g., disease status) |
+| `pheno2` | A categorical phenotype used in prioritization |
+| `pheno3` | A continuous trait (e.g., height or biomarker) |
+
+Example:
+
+| FID | IID  | pheno1   | pheno2    | pheno3 |
+|-----|------|----------|-----------|--------|
+| 0   | 1001 | DISEASED | DISEASED2 | 109.5  |
+| 0   | 1002 | HEALTHY  | HEALTHY   | 117.18 |
+| 0   | 1003 | HEALTHY  | HEALTHY   | 90.41  |
+| 0   | 1004 | HEALTHY  | HEALTHY   | 95     |
+
+---
+
+### `simple_kinship.txt`
+
+This file encodes pairwise relatedness between individuals based on genome-wide genotype data.
+
+| Column    | Description |
+|-----------|-------------|
+| `FID1`    | Family ID of individual 1 |
+| `IID1`    | Individual ID of individual 1 |
+| `FID2`    | Family ID of individual 2 |
+| `IID2`    | Individual ID of individual 2 |
+| `HetHet`  | Proportion of sites where both individuals are heterozygous |
+| `IBS0`    | Proportion of sites with no alleles in common |
+| `KINSHIP` | Estimated kinship coefficient (values > 0.0442 typically indicate 2nd-degree or closer relationships) |
+
+Example:
+
+| FID1 | IID1 | FID2 | IID2 | HetHet | IBS0  | KINSHIP |
+|------|------|------|------|--------|-------|---------|
+| 0    | 1001 | 0    | 1002 | 0.037  | 0.0083| 1       |
+| 0    | 1003 | 0    | 1004 | 0.046  | 0.0148| 1       |
+
+---
+
+# Simple Example: Resolving Relatedness in a Small Cohort
+
+```{r,eval=FALSE}
+library(kdps)
+
+phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")
+kinship_file   = system.file("extdata", "simple_kinship.txt", package = "kdps")
+
+kdps_results = kdps(
+  phenotype_file = phenotype_file,
+  kinship_file = kinship_file,
+  fuzziness = 0,
+  phenotype_name = "pheno2",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  fid_name = "FID",
+  iid_name = "IID",
+  fid1_name = "FID1",
+  iid1_name = "IID1",
+  fid2_name = "FID2",
+  iid2_name = "IID2",
+  kinship_name = "KINSHIP",
+  kinship_threshold = 0.0442,
+  phenotypic_naive = FALSE
+)
+
+kdps_results
+```
+
+---
+
+# Complex Example: Larger Relatedness Network
+
+```{r,eval=FALSE}
+phenotype_file = system.file("extdata", "complex_pheno.txt", package = "kdps")
+kinship_file   = system.file("extdata", "complex_kinship.txt", package = "kdps")
+
+kdps_results = kdps(
+  phenotype_file = phenotype_file,
+  kinship_file = kinship_file,
+  fuzziness = 0,
+  phenotype_name = "pheno2",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  fid_name = "FID",
+  iid_name = "IID",
+  fid1_name = "FID1",
+  iid1_name = "IID1",
+  fid2_name = "FID2",
+  iid2_name = "IID2",
+  kinship_name = "KINSHIP",
+  kinship_threshold = 0.0442,
+  phenotypic_naive = FALSE
+)
+
+head(kdps_results)
+```
+
+---
+
+# Function Arguments
+
+Key arguments for `kdps()` include:
+
+- `phenotype_file`, `kinship_file`: File paths to phenotype and kinship matrices.
+- `phenotype_name`: The column name of the phenotype to prioritize.
+- `phenotype_rank`: Ordered levels from most to least important.
+- `kinship_threshold`: Kinship score above which subjects are considered related.
+- `fuzziness`: Controls tolerance when resolving complex networks (default = 0).
+- `prioritize_high`, `prioritize_low`: If `TRUE`, prioritizes subjects with extreme phenotype values (numeric).
+- `phenotypic_naive`: If `TRUE`, phenotype info is ignored and ties are broken randomly.
+
+---
+
+# Output
+
+The output is a `data.frame` with columns:
+
+- `FID`: Family ID of the subject to remove.
+- `IID`: Individual ID of the subject to remove.
+
+You can save this output to a text file to filter out individuals in your downstream analysis.
+
+```{r,eval=FALSE}
+write.table(kdps_results, file = "subjects_to_remove.txt", quote = FALSE, row.names = FALSE)
+```
+
+---
+
+# Final Notes
+
+- KDPS is designed for large-scale studies like UK Biobank, with efficient performance even on complex networks.
+- Users are encouraged to interpret results in the context of potential **collider bias** introduced by phenotype-aware filtering.
+- For large studies, consider pre-filtering unrelated individuals using tools like `PLINK` and using KDPS for final refinement.
+
+---
+
+For updates and source code, visit: [https://github.com/UCSD-Salem-Lab/kdps](https://github.com/UCSD-Salem-Lab/kdps")

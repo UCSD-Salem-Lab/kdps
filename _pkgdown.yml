@@ -1,0 +1,44 @@
+package: KDPS
+title: "KDPS: Kinship Decouple and Phenotype Selection"
+url: https://UCSD-Salem-Lab.github.io/kdps
+logo: man/figures/logo.png
+
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#2c3e50"
+    base_font:
+      google: "Fira Sans"
+    heading_font:
+      google: "Fira Sans"
+
+navbar:
+  structure:
+    left:
+      - reference
+      - articles
+    right:
+      - github
+
+components:
+  github:
+    icon: fa-github
+    href: https://github.com/UCSD-Salem-Lab/kdps
+
+home:
+  title: "KDPS"
+  strip_header: false
+  tagline: "Phenotype-aware kinship pruning for biobank-scale genetic studies"
+  sidebar:
+    structure:
+      - links
+      - license
+      - community
+      - citation
+      - authors
+
+authors:
+  sidebar:
+    title: "Developer"
+    desc: "Developed and maintained by Wanjun Gu."

@@ -37,31 +37,35 @@
 #' @return A data frame with two columns, `FID` and `IID`, representing the family and individual IDs
 #' of subjects suggested for removal. This output can be used to refine the study population by
 #' excluding these subjects in subsequent analyses.
-#' @importFrom stats runif setNames
 #' @examples
 #' \dontrun{
-#' subject_to_remove = kdps(phenotype_file = "data/simple_pheno.txt",
-#'                          kinship_file = "data/simple_kinship.txt",
-#'                          fuzziness = 0,
-#'                          phenotype_name = "pheno2",
-#'                          prioritize_high = FALSE,
-#'                          prioritize_low = FALSE,
-#'                          phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-#'                          fid_name = "FID",
-#'                          iid_name = "IID",
-#'                          fid1_name = "FID1",
-#'                          iid1_name = "IID1",
-#'                          fid2_name = "FID2",
-#'                          iid2_name = "IID2",
-#'                          kinship_name = "KINSHIP",
-#'                          kinship_threshold = 0.0442,
-#'                          phenotypic_naive = FALSE)
-#' }
+#' phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")
+#' kinship_file   = system.file("extdata", "simple_kinship.txt", package = "kdps")
 #'
+#' kdps_results = kdps(
+#'   phenotype_file = phenotype_file,
+#'   kinship_file = kinship_file,
+#'   fuzziness = 0,
+#'   phenotype_name = "pheno2",
+#'   prioritize_high = FALSE,
+#'   prioritize_low = FALSE,
+#'   phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+#'   fid_name = "FID",
+#'   iid_name = "IID",
+#'   fid1_name = "FID1",
+#'   iid1_name = "IID1",
+#'   fid2_name = "FID2",
+#'   iid2_name = "IID2",
+#'   kinship_name = "KINSHIP",
+#'   kinship_threshold = 0.0442,
+#'   phenotypic_naive = FALSE
+#' )
+#'
+#' print(kdps_results)
+#' }
 #' @export
-
-kdps = function(phenotype_file = "data/simple_pheno.txt",
-                kinship_file = "data/simple_kinship.txt",
+kdps = function(phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps"),
+                kinship_file = system.file("extdata", "simple_kinship.txt", package = "kdps"),
                 fuzziness = 0,
                 phenotype_name = "pheno2",
                 prioritize_high = FALSE,
@@ -78,7 +82,7 @@ kdps = function(phenotype_file = "data/simple_pheno.txt",
                 kinship_name = "KINSHIP",
                 kinship_threshold = 0.0442,
                 phenotypic_naive = FALSE){
-  
+
   # Make phenotype data frame
   pheno = as.data.frame(data.table::fread(phenotype_file))
   pheno[[phenotype_name]] = as.character(pheno[[phenotype_name]])
@@ -103,16 +107,16 @@ kdps = function(phenotype_file = "data/simple_pheno.txt",
       wt = order(wt, decreasing = TRUE)
     }
   }
-  
-  fid_iid = paste0("subject_", paste(pheno[[fid_name]], 
-                                     pheno[[iid_name]], 
+
+  fid_iid = paste0("subject_", paste(pheno[[fid_name]],
+                                     pheno[[iid_name]],
                                      sep = "_"))
-  
+
   pheno = tibble::tibble(
     fid_iid = fid_iid,
     wt = wt
   )
-  
+
   # Make kinship data frame
   kinship = as.data.frame(data.table::fread(kinship_file))
   kinship = tibble::tibble(
@@ -121,8 +125,8 @@ kdps = function(phenotype_file = "data/simple_pheno.txt",
     fid2 = kinship[[fid2_name]],
     iid2 = kinship[[iid2_name]],
     kinship = kinship[[kinship_name]]
-  ) 
-  
+  )
+
   kinship = kinship |>
     dplyr::mutate(fid1_iid1 = paste(fid1, iid1, sep = "_")) |>
     dplyr::mutate(fid2_iid2 = paste(fid2, iid2, sep = "_")) |>
@@ -131,91 +135,91 @@ kdps = function(phenotype_file = "data/simple_pheno.txt",
     dplyr::mutate(related = kinship >= kinship_threshold) |>
     dplyr::filter(related) |>
     dplyr::select(fid1_iid1, fid2_iid2, related)
-  
+
   # Remove subjects that are not found in both the kinship and phenotype files
   kinship_subjects = unique(c(kinship[["fid1_iid1"]], kinship[["fid2_iid2"]]))
   pheno_subjects = unique(pheno[["fid_iid"]])
   common_subjects = intersect(kinship_subjects, pheno_subjects)
-  
-  cat(paste0(length(kinship_subjects), " unique related subjects found in the kinship file...\n"))
-  cat(paste0(length(pheno_subjects), " unique subjects found in the phenotype file...\n"))
-  cat(paste0(length(common_subjects), " subjects are found in both the related kinship and phenotype files...\n"))
-  
+
+  message(paste0(length(kinship_subjects), " unique related subjects found in the kinship file...\n"))
+  message(paste0(length(pheno_subjects), " unique subjects found in the phenotype file...\n"))
+  message(paste0(length(common_subjects), " subjects are found in both the related kinship and phenotype files...\n"))
+
   kinship_standout = kinship_subjects[!(kinship_subjects %in% common_subjects)]
   pheno_standout = pheno_subjects[!(pheno_subjects %in% common_subjects)]
-  
-  cat(paste0(length(kinship_standout), " unique subjects found only in the related kinship file...\n"))
-  cat(paste0(length(pheno_standout), " unique subjects found only in the phenotype file...\n"))
-  
-  cat("Removing subjects from the kinship file without phenotype information...\n")
+
+  message(paste0(length(kinship_standout), " unique subjects found only in the related kinship file...\n"))
+  message(paste0(length(pheno_standout), " unique subjects found only in the phenotype file...\n"))
+
+  message("Removing subjects from the kinship file without phenotype information...\n")
   subject_to_remove_list = kinship_standout
-  
+
   kinship = kinship |>
     dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) |>
     dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
-  
-  cat(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
-  
+
+  message(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
+
   # Filter out singular relatedness
-  cat("Filtering out singular relatedness...\n")
+  message("Filtering out singular relatedness...\n")
   relationship = table(c(
     kinship[["fid1_iid1"]],
     kinship[["fid2_iid2"]]
   ))
   one_timers = names(relationship[relationship == 1])
-  
+
   singular_nodes = kinship |>
     dplyr::filter(fid1_iid1 %in% one_timers) |>
     dplyr::filter(fid2_iid2 %in% one_timers) |>
-    dplyr::left_join(dplyr::mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) |> 
+    dplyr::left_join(dplyr::mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) |>
                        dplyr::select(fid1_iid1, wt1),
                      by = "fid1_iid1") |>
-    dplyr::left_join(dplyr::mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) |> 
+    dplyr::left_join(dplyr::mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) |>
                        dplyr::select(fid2_iid2, wt2),
                      by = "fid2_iid2") |>
     dplyr::mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
-  
+
   if(phenotypic_naive){
     singular_nodes = singular_nodes |>
       dplyr::mutate(subject_to_remove = ifelse(runif(dim(singular_nodes)[1]) > 0.5,
-                                        fid1_iid1, fid2_iid2))
+                                               fid1_iid1, fid2_iid2))
   }
-  
+
   subject_to_remove_list = c(subject_to_remove_list, singular_nodes[["subject_to_remove"]])
-  
+
   kinship = kinship |>
     dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) |>
     dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
-  
-  cat(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
-  
+
+  message(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
+
   if(dim(kinship)[1] == 0){
-    cat("Only singular relatedness are present in the dataset...\n")
+    message("Only singular relatedness are present in the dataset...\n")
     average_wt = (pheno |>
                     dplyr::filter(!(fid_iid %in% subject_to_remove_list)))[["wt"]] |>
       mean()
-    cat(paste0("Average subject phenotypic weight: ", round(average_wt,2), "\n\n"))
-    
+    message(paste0("Average subject phenotypic weight: ", round(average_wt,2), "\n\n"))
+
     subject_to_remove_list = tibble::tibble(
       FID = strsplit(subject_to_remove_list, split = "_") |>
         lapply(function(x){x[2]}) |> unlist(),
       IID = strsplit(subject_to_remove_list, split = "_") |>
         lapply(function(x){x[3]}) |> unlist()
     )
-    
+
     return(subject_to_remove_list)
   }
-  
+
   # Filter out singular nodes if fuzziness is 0
   if(fuzziness == 0){
-    cat(paste0("Filtering out isolated super-subjects...\n"))
+    message(paste0("Filtering out isolated super-subjects...\n"))
     relationship = table(c(
       kinship[["fid1_iid1"]],
       kinship[["fid2_iid2"]]
     ))
     isolated_n_timer = vector()
     for(n_relation in 2:10){
-      cat(paste0("Filtering out isolated super-subjects with ", n_relation, " relatives...\n"))
+      message(paste0("Filtering out isolated super-subjects with ", n_relation, " relatives...\n"))
       n_timers = names(relationship[relationship == n_relation])
       if(length(n_timers) > 0){
         pb = progress::progress_bar$new(total = length(n_timers))
@@ -235,37 +239,37 @@ kdps = function(phenotype_file = "data/simple_pheno.txt",
         }
       }
     }
-    
-    subject_to_remove_list = c(subject_to_remove_list, 
+
+    subject_to_remove_list = c(subject_to_remove_list,
                                isolated_n_timer[["subject"]])
     kinship = kinship |>
       dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) |>
       dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
   }
-  
+
   # Pruning complex relateness networks
-  cat("Pruning complex relateness networks...\n")
+  message("Pruning complex relateness networks...\n")
   relationship = table(c(
     kinship[["fid1_iid1"]],
     kinship[["fid2_iid2"]]
   ))
   max_count = max(relationship)
-  
+
   while(max_count > 1){
     relationship = table(c(
       kinship[["fid1_iid1"]],
       kinship[["fid2_iid2"]]
     ))
-    
+
     max_count = max(relationship)
     max_count_corrected = max_count - fuzziness
-    
+
     subject_to_remove = (tibble::tibble(
       fid_iid = names(relationship[relationship >= max_count_corrected])
     ) |>
       dplyr::left_join(pheno, by = "fid_iid") |>
       dplyr::arrange(wt))[["fid_iid"]][1]
-    
+
     if(phenotypic_naive){
       subject_to_remove = (tibble::tibble(
         fid_iid = names(relationship[relationship >= max_count_corrected])
@@ -273,77 +277,57 @@ kdps = function(phenotype_file = "data/simple_pheno.txt",
         dplyr::left_join(pheno, by = "fid_iid"))[["fid_iid"]]
       subject_to_remove = subject_to_remove[sample(1:length(subject_to_remove), 1)]
     }
-    
+
     kinship = kinship |>
       dplyr::filter(fid1_iid1 != subject_to_remove) |>
       dplyr::filter(fid2_iid2 != subject_to_remove)
-    
-    cat(paste0("# of relationships left: ", dim(kinship)[1], "\r"))
+
+    message(paste0("# of relationships left: ", dim(kinship)[1], "\r"))
     subject_to_remove_list = c(subject_to_remove_list, subject_to_remove)
   }
-  cat(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
-  
+  message(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
+
   # Work up
-  cat("Performing work-up...\n")
+  message("Performing work-up...\n")
   singular_nodes = kinship |>
-    dplyr::left_join(dplyr::mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) |> 
+    dplyr::left_join(dplyr::mutate(pheno, fid1_iid1 = fid_iid, wt1 = wt) |>
                        dplyr::select(fid1_iid1, wt1),
                      by = "fid1_iid1") |>
-    dplyr::left_join(dplyr::mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) |> 
+    dplyr::left_join(dplyr::mutate(pheno, fid2_iid2 = fid_iid, wt2 = wt) |>
                        dplyr::select(fid2_iid2, wt2),
                      by = "fid2_iid2") |>
     dplyr::mutate(subject_to_remove = ifelse(wt2 > wt1, fid1_iid1, fid2_iid2))
-  
+
   if(phenotypic_naive){
     singular_nodes = singular_nodes |>
       dplyr::mutate(subject_to_remove = ifelse(runif(1>0.5), fid1_iid1, fid2_iid2))
   }
-  
+
   subject_to_remove_list = c(subject_to_remove_list, singular_nodes[["subject_to_remove"]])
-  
+
   # Report
   kinship = kinship |>
     dplyr::filter(!(fid1_iid1 %in% subject_to_remove_list)) |>
     dplyr::filter(!(fid2_iid2 %in% subject_to_remove_list))
-  cat(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
-  
+  message(paste0("# of relationships left: ", dim(kinship)[1], "\n"))
+
   average_wt = (pheno |>
                   dplyr::filter(!(fid_iid %in% subject_to_remove_list)))[["wt"]] |>
     mean()
-  cat(paste0("Average subject phenotypic weight: ", round(average_wt,2), "\n\n"))
-  
+  message(paste0("Average subject phenotypic weight: ", round(average_wt,2), "\n\n"))
+
   n_remove = length(subject_to_remove_list)
   n_total = dim(pheno)[1]
-  cat(paste0("Suggest removing ", n_remove, " subjects out of ", n_total, ".\n"))
-  
+  message(paste0("Suggest removing ", n_remove, " subjects out of ", n_total, ".\n"))
+
   subject_to_remove_list = tibble::tibble(
     FID = strsplit(subject_to_remove_list, split = "_") |>
       lapply(function(x){x[2]}) |> unlist(),
     IID = strsplit(subject_to_remove_list, split = "_") |>
       lapply(function(x){x[3]}) |> unlist()
   )
-  
-  return(subject_to_remove_list)
-  
-}
 
-### NOT RUN
-# subject_to_remove = kdps(phenotype_file = "data/simple_pheno.txt",
-#                          kinship_file = "data/simple_kinship.txt",
-#                          fuzziness = 0,
-#                          phenotype_name = "pheno2",
-#                          prioritize_high = FALSE,
-#                          prioritize_low = FALSE,
-#                          phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-#                          # Header names in the phenotype file
-#                          fid_name = "FID",
-#                          iid_name = "IID",
-#                          # Header names in the kinship file
-#                          fid1_name = "FID1",
-#                          iid1_name = "IID1",
-#                          fid2_name = "FID2",
-#                          iid2_name = "IID2",
-#                          kinship_name = "KINSHIP",
-#                          kinship_threshold = 0.0442,
-#                          phenotypic_naive = FALSE)
+  return(subject_to_remove_list)
+
+}
 

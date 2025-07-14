@@ -2,85 +2,68 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+# KDPS <img src="man/figures/logo.png" align="right" height="80"/>
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
+**KDPS** (Kinship Decouple and Phenotype Selection) is an R package designed to resolve cryptic relatedness in genetic studies using a **phenotype-aware** approach. It retains subjects with relevant traits while pruning related individuals based on kinship or identity-by-descent (IBD) scores.
 
-# Kinship Decouple and Phenotype Selection (KDPS) <a href="https://github.com/Broccolito/kdps"><img src="man/figures/logo.png" align="right" height="138" /></a>
+## Features
 
-<!-- badges: start -->
-[![R-CMD-check](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Broccolito/kinclean/actions/workflows/R-CMD-check.yaml)
-<!-- badges: end -->
-
-The goal of KDPS is to remove related subjects based on kinship matrix as well as subject phenotype
+- Prioritizes individuals with key phenotypes (categorical or numeric)
+- Supports phenotype ranking and composite scoring
+- Customizable pruning using `fuzziness` parameter
+- Efficient on biobank-scale datasets like UK Biobank
+- Compatible with both kinship and phenotype file formats
 
 ## Installation
 
-You can install the development version of kdps from [GitHub](https://github.com/) with:
+You can install the development version of KDPS from GitHub with:
 
-```{r,eval=FALSE}
-if(!require("devtools")){
-  install.packages("devtools")
-  library("devtools")
-}
-
-devtools::install_github("Broccolito/kdps")
+```r
+# install.packages("devtools")
+devtools::install_github("UCSD-Salem-Lab/kdps")
 ```
 
 ## Example
 
-This is a basic example showing how to use the `kdps` function:
-```{r example,eval=FALSE}
+```r
 library(kdps)
-subject_to_remove = kdps(phenotype_file = file.path(system.file("extdata", package = "kdps"), 
-                                                    "simple_pheno.txt"),
-                         kinship_file = file.path(system.file("extdata", package = "kdps"), 
-                                                    "simple_kinship.txt"),
-                         fuzziness = 0,
-                         phenotype_name = "pheno2",
-                         prioritize_high = FALSE,
-                         prioritize_low = FALSE,
-                         phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-                         # Header names in the phenotype file
-                         fid_name = "FID",
-                         iid_name = "IID",
-                         # Header names in the kinship file
-                         fid1_name = "FID1",
-                         iid1_name = "IID1",
-                         fid2_name = "FID2",
-                         iid2_name = "IID2",
-                         kinship_name = "KINSHIP",
-                         kinship_threshold = 0.0442,
-                         phenotypic_naive = FALSE)
+
+phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")
+kinship_file   = system.file("extdata", "simple_kinship.txt", package = "kdps")
+
+kdps_results = kdps(
+  phenotype_file = phenotype_file,
+  kinship_file = kinship_file,
+  fuzziness = 0,
+  phenotype_name = "pheno2",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  fid_name = "FID",
+  iid_name = "IID",
+  fid1_name = "FID1",
+  iid1_name = "IID1",
+  fid2_name = "FID2",
+  iid2_name = "IID2",
+  kinship_name = "KINSHIP",
+  kinship_threshold = 0.0442,
+  phenotypic_naive = FALSE
+)
+
+head(kdps_results)
 ```
 
-In this example, the phenotype file looks like:
+## Documentation
 
-| FID|  IID|pheno1   |pheno2    | pheno3|
-|---:|----:|:--------|:---------|------:|
-|   0| 1001|DISEASED |DISEASED2 | 109.50|
-|   0| 1002|HEALTHY  |HEALTHY   | 117.18|
-|   0| 1003|HEALTHY  |HEALTHY   |  90.41|
-|   0| 1004|HEALTHY  |HEALTHY   |  95.00|
+- [Getting Started with KDPS](https://UCSD-Salem-Lab.github.io/kdps/articles/kdps-intro.html)
+- Function reference: `?kdps`
 
-The kinship file looks like:
+## Citation
 
-| FID1| IID1| FID2| IID2| HetHet|   IBS0| KINSHIP|
-|----:|----:|----:|----:|------:|------:|-------:|
-|    0| 1001|    0| 1002|  0.037| 0.0083|       1|
-|    0| 1003|    0| 1004|  0.046| 0.0148|       1|
+If you use KDPS in your research, please cite:
 
-The real-life datasets are usually much longer but should always contain the sample key components:
+> Wanjun Gu, Jiachen Xi, Steven Cao, Rany M. Salem. *Kinship Decouple and Phenotype Selection (KDPS)*. Manuscript in preparation
 
-Phenotype file: FID, IID, phenotype (binary, categorical, numerical)
-Kinship file: FID1, IID1, FID2, IID2, Kinship score or IBS score.
+## License
 
-
-
+This package is released under the MIT License. See `LICENSE` file for details.

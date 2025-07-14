@@ -5,8 +5,8 @@
 \title{Kinship Decouple and Phenotype Selection (KDPS)}
 \usage{
 kdps(
-  phenotype_file = "data/simple_pheno.txt",
-  kinship_file = "data/simple_kinship.txt",
+  phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps"),
+  kinship_file = system.file("extdata", "simple_kinship.txt", package = "kdps"),
   fuzziness = 0,
   phenotype_name = "pheno2",
   prioritize_high = FALSE,
@@ -57,12 +57,12 @@ kdps(
 \item{phenotypic_naive}{A logical indicating whether to ignore phenotype information when resolving conflicts between related individuals.}
 }
 \value{
-A data frame with two columns, \code{FID} and \code{IID}, representing the family and individual IDs
+A data frame with two columns, `FID` and `IID`, representing the family and individual IDs
 of subjects suggested for removal. This output can be used to refine the study population by
 excluding these subjects in subsequent analyses.
 }
 \description{
-The \code{kdps} function identifies subjects to be removed from a study based on kinship and phenotype
+The `kdps` function identifies subjects to be removed from a study based on kinship and phenotype
 information. It uses kinship matrices and phenotype data to evaluate and prioritize subjects
 according to their phenotype scores, taking into account their relatedness. The algorithm can
 prioritize subjects with high or low phenotype values and filter out subjects based on kinship
@@ -80,22 +80,28 @@ relatedness filtering through the kinship threshold and fuzziness parameter.
 }
 \examples{
 \dontrun{
-subject_to_remove = kdps(phenotype_file = "data/simple_pheno.txt",
-                         kinship_file = "data/simple_kinship.txt",
-                         fuzziness = 0,
-                         phenotype_name = "pheno2",
-                         prioritize_high = FALSE,
-                         prioritize_low = FALSE,
-                         phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-                         fid_name = "FID",
-                         iid_name = "IID",
-                         fid1_name = "FID1",
-                         iid1_name = "IID1",
-                         fid2_name = "FID2",
-                         iid2_name = "IID2",
-                         kinship_name = "KINSHIP",
-                         kinship_threshold = 0.0442,
-                         phenotypic_naive = FALSE)
-}
+phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")
+kinship_file   = system.file("extdata", "simple_kinship.txt", package = "kdps")
 
+kdps_results = kdps(
+  phenotype_file = phenotype_file,
+  kinship_file = kinship_file,
+  fuzziness = 0,
+  phenotype_name = "pheno2",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  fid_name = "FID",
+  iid_name = "IID",
+  fid1_name = "FID1",
+  iid1_name = "IID1",
+  fid2_name = "FID2",
+  iid2_name = "IID2",
+  kinship_name = "KINSHIP",
+  kinship_threshold = 0.0442,
+  phenotypic_naive = FALSE
+)
+
+print(kdps_results)
+}
 }
