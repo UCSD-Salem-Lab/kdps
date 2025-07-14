@@ -87,14 +87,11 @@ phenotypes.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://devtools.r-lib.org/" class="external-link">"devtools"</a></span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
-<span><span class="co">#&gt; Loading required package: devtools</span></span>
-<span><span class="co">#&gt; Loading required package: usethis</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st">"kdps"</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"UCSD-Salem-Lab/kdps"</span><span class="op">)</span></span>
+<span>  <span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"UCSD-Salem-Lab/kdps"</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st">"kdps"</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt; Loading required package: kdps</span></span></code></pre></div>
+<span><span class="op">}</span></span></code></pre></div>
 <hr>
 </div>
 <div class="section level2">
@@ -291,35 +288,6 @@ genome-wide genotype data.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="complex-example-larger-relatedness-network">Complex Example: Larger Relatedness Network<a class="anchor" aria-label="anchor" href="#complex-example-larger-relatedness-network"></a>
-</h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">phenotype_file</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"complex_pheno.txt"</span>, package <span class="op">=</span> <span class="st">"kdps"</span><span class="op">)</span></span>
-<span><span class="va">kinship_file</span>   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"complex_kinship.txt"</span>, package <span class="op">=</span> <span class="st">"kdps"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">kdps_results</span> <span class="op">=</span> <span class="fu"><a href="../reference/kdps.html">kdps</a></span><span class="op">(</span></span>
-<span>  phenotype_file <span class="op">=</span> <span class="va">phenotype_file</span>,</span>
-<span>  kinship_file <span class="op">=</span> <span class="va">kinship_file</span>,</span>
-<span>  fuzziness <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  phenotype_name <span class="op">=</span> <span class="st">"pheno2"</span>,</span>
-<span>  prioritize_high <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  prioritize_low <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  phenotype_rank <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"DISEASED1"</span>, <span class="st">"DISEASED2"</span>, <span class="st">"HEALTHY"</span><span class="op">)</span>,</span>
-<span>  fid_name <span class="op">=</span> <span class="st">"FID"</span>,</span>
-<span>  iid_name <span class="op">=</span> <span class="st">"IID"</span>,</span>
-<span>  fid1_name <span class="op">=</span> <span class="st">"FID1"</span>,</span>
-<span>  iid1_name <span class="op">=</span> <span class="st">"IID1"</span>,</span>
-<span>  fid2_name <span class="op">=</span> <span class="st">"FID2"</span>,</span>
-<span>  iid2_name <span class="op">=</span> <span class="st">"IID2"</span>,</span>
-<span>  kinship_name <span class="op">=</span> <span class="st">"KINSHIP"</span>,</span>
-<span>  kinship_threshold <span class="op">=</span> <span class="fl">0.0442</span>,</span>
-<span>  phenotypic_naive <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">kdps_results</span><span class="op">)</span></span></code></pre></div>
-<hr>
-</div>
-<div class="section level2">
 <h2 id="function-arguments">Function Arguments<a class="anchor" aria-label="anchor" href="#function-arguments"></a>
 </h2>
 <p>Key arguments for <code><a href="../reference/kdps.html">kdps()</a></code> include:</p>
@@ -361,7 +329,7 @@ is ignored and ties are broken randomly.</li>
 </ul>
 <p>You can save this output to a text file to filter out individuals in
 your downstream analysis.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/write.table.html" class="external-link">write.table</a></span><span class="op">(</span><span class="va">kdps_results</span>, file <span class="op">=</span> <span class="st">"subjects_to_remove.txt"</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>, row.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <hr>
 </div>

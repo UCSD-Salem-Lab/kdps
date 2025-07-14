@@ -26,14 +26,14 @@ This tool is useful in GWAS and epidemiological studies where maximizing the num
 
 To install the latest version from GitHub:
 
-```{r}
+```{r,eval=FALSE}
 if(!require("devtools")){
   install.packages("devtools")
   library("devtools")
 }
 
 if(!require("kdps")){
-devtools::install_github("UCSD-Salem-Lab/kdps")
+  devtools::install_github("UCSD-Salem-Lab/kdps")
   library("kdps")
 }
 ```
@@ -118,36 +118,6 @@ kdps_results = kdps(
 )
 
 kdps_results
-```
-
----
-
-# Complex Example: Larger Relatedness Network
-
-```{r,eval=FALSE}
-phenotype_file = system.file("extdata", "complex_pheno.txt", package = "kdps")
-kinship_file   = system.file("extdata", "complex_kinship.txt", package = "kdps")
-
-kdps_results = kdps(
-  phenotype_file = phenotype_file,
-  kinship_file = kinship_file,
-  fuzziness = 0,
-  phenotype_name = "pheno2",
-  prioritize_high = FALSE,
-  prioritize_low = FALSE,
-  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
-  fid_name = "FID",
-  iid_name = "IID",
-  fid1_name = "FID1",
-  iid1_name = "IID1",
-  fid2_name = "FID2",
-  iid2_name = "IID2",
-  kinship_name = "KINSHIP",
-  kinship_threshold = 0.0442,
-  phenotypic_naive = FALSE
-)
-
-head(kdps_results)
 ```
 
 ---
