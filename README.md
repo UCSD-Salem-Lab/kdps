@@ -24,6 +24,14 @@ You can install the development version of KDPS from GitHub with:
 devtools::install_github("UCSD-Salem-Lab/kdps")
 ```
 
+## Tutorial
+
+You can view the tutorial of the KDPS function with:
+
+``` r
+vignette("kdps-intro", package = "kdps")
+```
+
 ## Example
 
 ``` r

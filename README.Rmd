@@ -18,14 +18,22 @@ output: github_document
 
 You can install the development version of KDPS from GitHub with:
 
-```r
+```{r,eval=FALSE}
 # install.packages("devtools")
 devtools::install_github("UCSD-Salem-Lab/kdps")
 ```
 
+## Tutorial
+
+You can view the tutorial of the KDPS function with:
+
+```{r,eval=FALSE}
+vignette("kdps-intro", package = "kdps")
+```
+
 ## Example
 
-```r
+```{r,eval=FALSE}
 library(kdps)
 
 phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")

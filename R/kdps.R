@@ -1,3 +1,9 @@
+utils::globalVariables(c(
+  "fid1", "iid1", "fid2", "iid2",
+  "fid1_iid1", "fid2_iid2",
+  "related", "wt1", "wt2"
+))
+
 #' Kinship Decouple and Phenotype Selection (KDPS)
 #'
 #' @description
