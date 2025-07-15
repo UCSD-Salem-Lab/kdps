@@ -6,7 +6,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -19,8 +18,6 @@ knitr::opts_chunk$set(
 `KDPS` (Kinship Decouple and Phenotype Selection) is an R package that resolves cryptic relatedness in genetic studies using a phenotype-aware approach. It removes related individuals based on kinship or IBD scores while prioritizing the retention of subjects with phenotypes of interest.
 
 This tool is useful in GWAS and epidemiological studies where maximizing the number of unrelated individuals with relevant traits is essential for statistical power, especially in rare or stratified phenotypes.
-
----
 
 # Installation
 
@@ -37,8 +34,6 @@ if(!require("kdps")){
   library("kdps")
 }
 ```
-
----
 
 # Example Data
 
@@ -65,8 +60,6 @@ Example:
 | 0   | 1003 | HEALTHY  | HEALTHY   | 90.41  |
 | 0   | 1004 | HEALTHY  | HEALTHY   | 95     |
 
----
-
 ### `simple_kinship.txt`
 
 This file encodes pairwise relatedness between individuals based on genome-wide genotype data.
@@ -87,8 +80,6 @@ Example:
 |------|------|------|------|--------|-------|---------|
 | 0    | 1001 | 0    | 1002 | 0.037  | 0.0083| 1       |
 | 0    | 1003 | 0    | 1004 | 0.046  | 0.0148| 1       |
-
----
 
 # Simple Example: Resolving Relatedness in a Small Cohort
 
@@ -120,8 +111,6 @@ kdps_results = kdps(
 kdps_results
 ```
 
----
-
 # Function Arguments
 
 Key arguments for `kdps()` include:
@@ -133,8 +122,6 @@ Key arguments for `kdps()` include:
 - `fuzziness`: Controls tolerance when resolving complex networks (default = 0).
 - `prioritize_high`, `prioritize_low`: If `TRUE`, prioritizes subjects with extreme phenotype values (numeric).
 - `phenotypic_naive`: If `TRUE`, phenotype info is ignored and ties are broken randomly.
-
----
 
 # Output
 
@@ -149,14 +136,13 @@ You can save this output to a text file to filter out individuals in your downst
 write.table(kdps_results, file = "subjects_to_remove.txt", quote = FALSE, row.names = FALSE)
 ```
 
----
-
 # Final Notes
 
 - KDPS is designed for large-scale studies like UK Biobank, with efficient performance even on complex networks.
 - Users are encouraged to interpret results in the context of potential **collider bias** introduced by phenotype-aware filtering.
 - For large studies, consider pre-filtering unrelated individuals using tools like `PLINK` and using KDPS for final refinement.
 
----
+For updates and source code, visit: [https://github.com/UCSD-Salem-Lab/kdps](https://github.com/ucsd-salem-lab/kdps)
 
-For updates and source code, visit: [https://github.com/UCSD-Salem-Lab/kdps](https://github.com/UCSD-Salem-Lab/kdps")
+
+
