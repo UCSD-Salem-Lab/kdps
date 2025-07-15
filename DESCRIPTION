@@ -23,4 +23,3 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
-# Spell-checker: ignore KDPS IBD Biobank

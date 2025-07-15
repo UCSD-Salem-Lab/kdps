@@ -64,7 +64,7 @@ head(kdps_results)
 
 ## Documentation
 
-- [KDPS Documentations](https://ucsd-salem-lab.github.io/kdps)
+- [KDPS Documentations](https://ucsd-salem-lab.github.io/kdps/)
 - [Getting Started with
   KDPS](https://ucsd-salem-lab.github.io/kdps/articles/kdps-intro.html)
 - Function reference: `?kdps`
