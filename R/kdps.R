@@ -44,13 +44,9 @@ utils::globalVariables(c(
 #' of subjects suggested for removal. This output can be used to refine the study population by
 #' excluding these subjects in subsequent analyses.
 #' @examples
-#' \dontrun{
-#' phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")
-#' kinship_file   = system.file("extdata", "simple_kinship.txt", package = "kdps")
-#'
-#' kdps_results = kdps(
-#'   phenotype_file = phenotype_file,
-#'   kinship_file = kinship_file,
+#' kdps(
+#'   phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps"),
+#'   kinship_file = system.file("extdata", "simple_kinship.txt", package = "kdps"),
 #'   fuzziness = 0,
 #'   phenotype_name = "pheno2",
 #'   prioritize_high = FALSE,
@@ -66,9 +62,6 @@ utils::globalVariables(c(
 #'   kinship_threshold = 0.0442,
 #'   phenotypic_naive = FALSE
 #' )
-#'
-#' print(kdps_results)
-#' }
 #' @export
 kdps = function(phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps"),
                 kinship_file = system.file("extdata", "simple_kinship.txt", package = "kdps"),

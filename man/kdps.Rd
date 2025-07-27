@@ -79,13 +79,9 @@ in handling phenotypes through ranking and prioritization options and can adjust
 relatedness filtering through the kinship threshold and fuzziness parameter.
 }
 \examples{
-\dontrun{
-phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")
-kinship_file   = system.file("extdata", "simple_kinship.txt", package = "kdps")
-
-kdps_results = kdps(
-  phenotype_file = phenotype_file,
-  kinship_file = kinship_file,
+kdps(
+  phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps"),
+  kinship_file = system.file("extdata", "simple_kinship.txt", package = "kdps"),
   fuzziness = 0,
   phenotype_name = "pheno2",
   prioritize_high = FALSE,
@@ -101,7 +97,4 @@ kdps_results = kdps(
   kinship_threshold = 0.0442,
   phenotypic_naive = FALSE
 )
-
-print(kdps_results)
-}
 }
