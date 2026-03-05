@@ -1,0 +1,84 @@
+
+# KDPS <img src="man/figures/logo.png" align="right" height="80"/>
+
+**KDPS** (Kinship Decouple and Phenotype Selection) is an R package
+designed to resolve cryptic relatedness in genetic studies using a
+**phenotype-aware** approach. It retains subjects with relevant traits
+while pruning related individuals based on kinship or
+identity-by-descent (IBD) scores.
+
+## Features
+
+- Prioritizes individuals with key phenotypes (categorical or numeric)
+- Supports phenotype ranking and composite scoring
+- Customizable pruning using `fuzziness` parameter
+- Efficient on biobank-scale datasets like UK Biobank
+- Compatible with both kinship and phenotype file formats
+
+## Installation
+
+You can install the development version of KDPS from GitHub with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("UCSD-Salem-Lab/kdps")
+```
+
+## Tutorial
+
+You can view the tutorial of the KDPS function with:
+
+``` r
+vignette("kdps-intro", package = "kdps")
+```
+
+## Example
+
+``` r
+library(kdps)
+
+phenotype_file = system.file("extdata", "simple_pheno.txt", package = "kdps")
+kinship_file   = system.file("extdata", "simple_kinship.txt", package = "kdps")
+
+kdps_results = kdps(
+  phenotype_file = phenotype_file,
+  kinship_file = kinship_file,
+  fuzziness = 0,
+  phenotype_name = "pheno2",
+  prioritize_high = FALSE,
+  prioritize_low = FALSE,
+  phenotype_rank = c("DISEASED1", "DISEASED2", "HEALTHY"),
+  fid_name = "FID",
+  iid_name = "IID",
+  fid1_name = "FID1",
+  iid1_name = "IID1",
+  fid2_name = "FID2",
+  iid2_name = "IID2",
+  kinship_name = "KINSHIP",
+  kinship_threshold = 0.0442,
+  phenotypic_naive = FALSE
+)
+
+head(kdps_results)
+```
+
+## Documentation
+
+- [KDPS Documentations](https://ucsd-salem-lab.github.io/kdps/)
+- [Getting Started with
+  KDPS](https://ucsd-salem-lab.github.io/kdps/articles/kdps-intro.html)
+- Function reference: `?kdps`
+
+## Citation
+
+If you use KDPS in your research, please cite:
+
+> Wanjun Gu, Jiachen Xi, Steven Cao, Rany M. Salem. (2025). *Kinship
+> Decouple and Phenotype Selection (KDPS): a tool for phenotype-aware
+> decoupling of related subjects.*. Brief. Bioinform. 26,
+> [bbaf561](https://academic.oup.com/bib/article/26/5/bbaf561/8303426).
+
+## License
+
+This package is released under the MIT License. See `LICENSE` file for
+details.
